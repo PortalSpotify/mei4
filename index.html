@@ -1326,27 +1326,23 @@
                     signal: AbortSignal.timeout(5000)
                 });
 
-                if (!response.ok) {
-                    throw new Error('Erro na requisição');
-                }
-
                 const data = await response.json();
 
                 await new Promise(resolve => setTimeout(resolve, 400));
 
-                if (data.message === 'CNPJ inválido' || data.type === 'service_error') {
-                        throw new Error(data.message || 'CNPJ não encontrado ou inválido');
-                    }
+                if (!response.ok || data.message === 'CNPJ inválido' || data.type === 'service_error') {
+                    throw new Error(data.message || 'CNPJ não encontrado ou inválido');
+                }
 
-                    // A BrasilAPI retorna os dados diretamente no corpo da resposta
-                    cnpjData = data;
-                    displayCNPJInfo(data);
-                    cnpjInput.classList.add('success');
-                    cnpjInput.classList.remove('error');
-                    if (errorEl) errorEl.classList.remove('show');
-                    cnpjInfoDisplay.style.display = 'block';
-                    waitingPayment.style.display = 'block';
-                    showSuccessNotification('CNPJ encontrado com sucesso!');
+                // A BrasilAPI retorna os dados diretamente no corpo da resposta
+                cnpjData = data;
+                displayCNPJInfo(data);
+                cnpjInput.classList.add('success');
+                cnpjInput.classList.remove('error');
+                if (errorEl) errorEl.classList.remove('show');
+                cnpjInfoDisplay.style.display = 'block';
+                waitingPayment.style.display = 'block';
+                showSuccessNotification('CNPJ encontrado com sucesso!');
 
                 
 
@@ -1357,7 +1353,7 @@
                 
             } catch (error) {
                 console.error('Erro ao buscar CNPJ:', error);
-                showCNPJError('Erro ao buscar CNPJ. Tente novamente.');
+                showCNPJError('Erro ao buscar CNPJ. Verifique se o CNPJ está correto ou tente novamente mais tarde.');
             } finally {
                 if (loadingIndicator) {
                     loadingIndicator.classList.remove('show');
